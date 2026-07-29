@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
+
 import { Toaster } from "sonner";
+import Providers from "../components/providers/providers";
+import GoogleAnalytics from "@/components/analytics/google-analytics";
 import { VerificationProvider } from "@/components/admin";
 import { LayoutContent } from "@/components/layout/layout-content";
-import Providers from "../components/providers/providers";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -18,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://your-domain.vercel.app"), // Replace after deployment
+  metadataBase: new URL("https://oladunjoye-abduljeleel-k1bj.vercel.app"), // Replace after deployment
 
   title: {
     default: "Olamilekan | Full Stack Developer",
@@ -72,6 +74,7 @@ export default function RootLayout({
     >
      <body>
   <Providers>
+     <GoogleAnalytics />
     <VerificationProvider>
       <LayoutContent>
         {children}
