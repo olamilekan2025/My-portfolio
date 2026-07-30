@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-const GATE_EXEMPT_PATHS = ["/admin", "/admin/login", "/admin/signup"];
+const GATE_EXEMPT_PATHS = ["/admin", "/auth/login", "/admin/signup"];
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
   // STEP 2: once gated, if already logged in, skip login/signup/PIN page
   if (
     pathname === "/admin" ||
-    pathname === "/admin/login" ||
+    pathname === "/auth/login" ||
     pathname === "/admin/signup"
   ) {
     if (isLoggedIn) {
@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
 
   // STEP 3: dashboard and everything else needs a real session
   if (!isLoggedIn) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return NextResponse.next();

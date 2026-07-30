@@ -35,6 +35,12 @@ console.log(
       success: true,
     });
 
+    // Clear all NextAuth session cookies to force login after PIN verification
+    response.cookies.delete("next-auth.session-token");
+    response.cookies.delete("__Secure-next-auth.session-token");
+    response.cookies.delete("authjs.session-token");
+    response.cookies.delete("__Secure-authjs.session-token");
+
     response.cookies.set("admin-gate", "true", {
       httpOnly: true,
       secure:

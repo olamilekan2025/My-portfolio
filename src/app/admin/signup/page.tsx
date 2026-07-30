@@ -18,7 +18,7 @@ export default async function AdminSignupPage() {
   const admin = await Admin.findOne().lean();
 
   if (admin) {
-    redirect("/admin/login");
+    redirect("/auth/login");
   }
 
   return <SignupForm />;

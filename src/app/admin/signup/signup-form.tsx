@@ -81,7 +81,7 @@ export default function SignupForm() {
         return;
       }
 
-      router.replace("/admin/login");
+      router.replace("/auth/login");
       router.refresh();
     } catch {
       setError(

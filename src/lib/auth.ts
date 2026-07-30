@@ -11,7 +11,7 @@ export const config: NextAuthConfig = {
   },
 
   pages: {
-    signIn: "/admin/login",
+    signIn: "/auth/login",
   },
 
   providers: [

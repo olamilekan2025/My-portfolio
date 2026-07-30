@@ -92,7 +92,7 @@ export function VerificationModal({
       onClose();
 
       // Use window.location to ensure cookie is set before navigation
-      window.location.href = "/admin/login";
+      window.location.href = "/auth/login";
     } catch {
       setError("Something went wrong.");
     } finally {

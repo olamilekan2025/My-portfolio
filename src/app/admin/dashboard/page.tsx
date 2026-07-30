@@ -309,6 +309,8 @@ import {
 
 import { connectDB } from "@/lib/mongodb";
 import Project from "@/models/Project";
+import Message from "@/models/Message";
+import { auth } from "@/lib/auth";
 
 interface RecentProject {
   id: string;
@@ -319,13 +321,25 @@ interface RecentProject {
   status: string;
 }
 
+interface RecentMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  status: string;
+  createdAt: Date;
+}
+
 async function getDashboardData() {
   await connectDB();
 
   const projects = await Project.find().sort({ createdAt: -1 }).lean();
+  const messages = await Message.find().sort({ createdAt: -1 }).lean();
 
   const projectsCount = projects.length;
   const liveCount = projects.filter((p) => p.status === "Live").length;
+  const messagesCount = messages.length;
+  const unreadCount = messages.filter((m) => m.status === "pending").length;
 
   const recentProjects: RecentProject[] = projects.slice(0, 5).map((p) => ({
     id: String(p._id),
@@ -336,10 +350,28 @@ async function getDashboardData() {
     status: p.status,
   }));
 
+  const recentMessages: RecentMessage[] = messages.slice(0, 5).map((m) => ({
+    id: String(m._id),
+    name: m.name,
+    email: m.email,
+    subject: m.subject,
+    status: m.status,
+    createdAt: m.createdAt,
+  }));
+
   const trend = buildWeeklyTrend(projects.map((p) => new Date(p.createdAt)));
   const addedThisWeek = trend[trend.length - 1] - trend[trend.length - 2];
 
-  return { projectsCount, liveCount, recentProjects, trend, addedThisWeek };
+  return { 
+    projectsCount, 
+    liveCount, 
+    messagesCount, 
+    unreadCount,
+    recentProjects, 
+    recentMessages,
+    trend, 
+    addedThisWeek 
+  };
 }
 
 function buildWeeklyTrend(dates: Date[]) {
@@ -357,15 +389,26 @@ function buildWeeklyTrend(dates: Date[]) {
 }
 
 export default async function AdminDashboardPage() {
-  const { projectsCount, liveCount, recentProjects, trend, addedThisWeek } =
-    await getDashboardData();
+  const session = await auth();
+  const userName = session?.user?.name || "Admin";
+  
+  const { 
+    projectsCount, 
+    liveCount, 
+    messagesCount, 
+    unreadCount,
+    recentProjects, 
+    recentMessages,
+    trend, 
+    addedThisWeek 
+  } = await getDashboardData();
 
   return (
     <div className="space-y-8">
       {/* Greeting */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Good {getGreeting()}, Olamilekan
+          Good {getGreeting()}, {userName}
           <span className="ml-2">✨</span>
         </h1>
         <p className="mt-1 text-muted-foreground">
@@ -393,12 +436,18 @@ export default async function AdminDashboardPage() {
 
         <StatCard
           title="Messages"
-          value="0"
-          delta="Not connected yet"
+          value={String(messagesCount)}
+          delta={
+            messagesCount === 0
+              ? "No messages yet"
+              : unreadCount > 0
+              ? `${unreadCount} unread`
+              : "All read"
+          }
           icon={<Mail className="h-5 w-5" />}
           gradient="from-orange-400 to-pink-500"
-          trend={[0, 0, 0, 0, 0, 0, 0]}
-          flat
+          trend={buildWeeklyTrend(recentMessages.map((m) => new Date(m.createdAt)))}
+          flat={messagesCount === 0}
         />
 
         <StatCard
@@ -493,8 +542,18 @@ export default async function AdminDashboardPage() {
             )}
 
             <InsightRow
-              label="No messages yet"
-              hint="They'll show up here once visitors reach out."
+              label={
+                messagesCount === 0
+                  ? "No messages yet"
+                  : `${messagesCount} message${messagesCount === 1 ? "" : "s"} received`
+              }
+              hint={
+                messagesCount === 0
+                  ? "They'll show up here once visitors reach out."
+                  : unreadCount > 0
+                  ? `${unreadCount} unread message${unreadCount === 1 ? "" : "s"} waiting for your reply.`
+                  : "All messages have been read."
+              }
             />
 
             <InsightRow
@@ -509,17 +568,18 @@ export default async function AdminDashboardPage() {
       <section className="grid gap-6 xl:grid-cols-2">
         <RecentProjectsPanel projects={recentProjects} />
 
-        <ListPanel
-          title="Recent Messages"
-          emptyLabel="No messages yet — contact form submissions will appear here."
-        />
+        <RecentMessagesPanel messages={recentMessages} />
       </section>
     </div>
   );
 }
 
 function getGreeting() {
-  const hour = new Date().getHours();
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const nigeriaTime = new Date(utc + (3600000 * 1)); // UTC+1 (Nigeria)
+  const hour = nigeriaTime.getHours();
+  
   if (hour < 12) return "morning";
   if (hour < 18) return "afternoon";
   return "evening";
@@ -679,6 +739,57 @@ function RecentProjectsPanel({ projects }: { projects: RecentProject[] }) {
                 <p className="truncate font-medium">{project.title}</p>
                 <p className="truncate text-xs text-muted-foreground">
                   {project.category} · {project.status}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RecentMessagesPanel({ messages }: { messages: RecentMessage[] }) {
+  return (
+    <div className="rounded-3xl border border-border/60 bg-card p-6 shadow-sm">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Recent Messages</h2>
+        <Link
+          href="/admin/messages"
+          className="text-sm font-medium text-primary hover:underline"
+        >
+          View All
+        </Link>
+      </div>
+
+      {messages.length === 0 ? (
+        <div className="flex h-56 items-center justify-center rounded-2xl border border-dashed border-border text-center text-sm text-muted-foreground">
+          No messages yet — contact form submissions will appear here.
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {messages.map((message) => (
+            <Link
+              key={message.id}
+              href={`/admin/messages/${message.id}`}
+              className="flex items-start gap-3 rounded-xl border border-border/60 p-3 transition hover:bg-muted/40"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-pink-500 text-white font-semibold">
+                {message.name.charAt(0).toUpperCase()}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="truncate font-medium">{message.name}</p>
+                  {message.status === "pending" && (
+                    <span className="h-2 w-2 rounded-full bg-orange-500" />
+                  )}
+                </div>
+                <p className="truncate text-xs text-muted-foreground">
+                  {message.subject}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {new Date(message.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </Link>

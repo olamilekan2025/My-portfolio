@@ -7,6 +7,7 @@ import {
   Users,
   BarChart3,
   Settings,
+  Bell,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -34,6 +35,11 @@ export const adminNavigation = [
     title: "Messages",
     href: "/admin/messages",
     icon: Mail,
+  },
+  {
+    title: "Notifications",
+    href: "/admin/notifications",
+    icon: Bell,
   },
   {
     title: "Newsletter",

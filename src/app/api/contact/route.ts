@@ -3,9 +3,13 @@ import { NextResponse } from "next/server";
 import { contactSchema } from "@/components/sections/contact/schema";
 
 import { sendContactEmail } from "@/lib/mail";
+import Message from "@/models/Message";
+import { connectDB } from "@/lib/mongodb";
 
 export async function POST(request: Request) {
   try {
+    await connectDB();
+
     const body = await request.json();
 
     const result =
@@ -22,6 +26,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Save message to database
+    await Message.create({
+      name: result.data.name,
+      email: result.data.email,
+      subject: result.data.subject,
+      message: result.data.message,
+    });
+
+    // Send email to admin
     await sendContactEmail(result.data);
 
     return NextResponse.json({
@@ -30,7 +43,7 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       {
-        error: "Failed to send email.",
+        error: "Failed to send message.",
       },
       {
         status: 500,

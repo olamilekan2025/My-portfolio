@@ -17,6 +17,8 @@ import { Logo } from "./logo";
 import { NavLink } from "./nav-link";
 import { ThemeToggle } from "./theme-toggle";
 import { MobileNav } from "./mobile-nav";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const active = useActiveSection([
@@ -29,6 +31,9 @@ export function Navbar() {
     "testimonials",
     "contact",
   ]);
+
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const [scrolled, setScrolled] =
     React.useState(false);
@@ -95,8 +100,16 @@ export function Navbar() {
   <ThemeToggle />
 
   {/* Right */}
-  <div className="flex items-end justify-end ">
-    
+  <div className="flex items-end justify-end gap-4">
+    {session?.user?.role === "admin" && (
+      <button
+        onClick={() => router.push("/admin/dashboard")}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition"
+        title="Go to Dashboard"
+      >
+        {session?.user?.name?.charAt(0)}
+      </button>
+    )}
 
     <div className="hidden lg:block">
       <ResumeButton />
