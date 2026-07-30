@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +18,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Notification {
   _id: string;
@@ -33,6 +40,10 @@ export default function AdminNotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [notificationToDelete, setNotificationToDelete] = useState<string | null>(null);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchNotifications();
@@ -70,6 +81,37 @@ export default function AdminNotificationsPage() {
   function openDeleteDialog(id: string) {
     setNotificationToDelete(id);
     setDeleteDialogOpen(true);
+  }
+
+  async function handleReply() {
+    if (!selectedNotification || !replyText.trim()) return;
+
+    try {
+      setSendingReply(true);
+      const response = await fetch(`/api/admin/messages/${selectedNotification._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reply: replyText }),
+      });
+
+      if (!response.ok) throw new Error();
+
+      toast.success("Reply sent successfully");
+      setReplyDialogOpen(false);
+      setReplyText("");
+      setSelectedNotification(null);
+      fetchNotifications();
+    } catch {
+      toast.error("Failed to send reply");
+    } finally {
+      setSendingReply(false);
+    }
+  }
+
+  function openReplyDialog(notification: Notification) {
+    setSelectedNotification(notification);
+    setReplyText("");
+    setReplyDialogOpen(true);
   }
 
   return (
@@ -161,12 +203,14 @@ export default function AdminNotificationsPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Link href={`/admin/messages/${notification._id}`}>
-                    <Button size="sm" variant="outline">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Reply
-                    </Button>
-                  </Link>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openReplyDialog(notification)}
+                  >
+                    <Mail className="h-4 w-4 mr-2" />
+                    Reply
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"
@@ -202,6 +246,49 @@ export default function AdminNotificationsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Reply Dialog */}
+      <Dialog open={replyDialogOpen} onOpenChange={setReplyDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Reply to Message</DialogTitle>
+          </DialogHeader>
+
+          {selectedNotification && (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-muted/50 p-4">
+                <p className="mb-2 text-sm font-medium">{selectedNotification.subject}</p>
+                <p className="mb-1 text-sm text-muted-foreground">
+                  From: {selectedNotification.name} ({selectedNotification.email})
+                </p>
+                <p className="text-sm">{selectedNotification.message}</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Your Reply</label>
+                <Textarea
+                  rows={6}
+                  placeholder="Type your reply..."
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setReplyDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleReply} disabled={sendingReply}>
+                  {sendingReply ? "Sending..." : "Send Reply"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
