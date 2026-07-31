@@ -21,16 +21,16 @@ export const adminNavigation = [
     href: "/admin/projects",
     icon: FolderKanban,
   },
-  {
-    title: "Experience",
-    href: "/admin/experience",
-    icon: Briefcase,
-  },
-  {
-    title: "Skills",
-    href: "/admin/skills",
-    icon: Code2,
-  },
+  // {
+  //   title: "Experience",
+  //   href: "/admin/experience",
+  //   icon: Briefcase,
+  // },
+  // {
+  //   title: "Skills",
+  //   href: "/admin/skills",
+  //   icon: Code2,
+  // },
   {
     title: "Messages",
     href: "/admin/messages",
@@ -41,11 +41,11 @@ export const adminNavigation = [
     href: "/admin/notifications",
     icon: Bell,
   },
-  {
-    title: "Newsletter",
-    href: "/admin/newsletter",
-    icon: Users,
-  },
+  // {
+  //   title: "Newsletter",
+  //   href: "/admin/newsletter",
+  //   icon: Users,
+  // },
   {
     title: "Analytics",
     href: "/admin/analytics",
