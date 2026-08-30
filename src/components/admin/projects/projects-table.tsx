@@ -207,22 +207,20 @@ export function ProjectsTable() {
                 </Button>
 
                 <AlertDialog>
-                  <AlertDialogTrigger
-  render={
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-9 w-9 rounded-xl text-destructive transition-all duration-200 hover:bg-destructive/10 hover:text-destructive"
-      disabled={deletingId === project._id}
-    >
-      {deletingId === project._id ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <Trash2 className="h-4 w-4" />
-      )}
-    </Button>
-  }
-/>
+                  <AlertDialogTrigger>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded-xl text-destructive transition-all duration-200 hover:bg-destructive/10 hover:text-destructive"
+                      disabled={deletingId === project._id}
+                    >
+                      {deletingId === project._id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
 
                   <AlertDialogContent className="rounded-2xl border-border/60 shadow-2xl">
                     <AlertDialogHeader>

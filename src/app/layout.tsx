@@ -73,8 +73,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
      <body>
-  <Providers>
      <GoogleAnalytics />
+  <Providers>
     <VerificationProvider>
       <LayoutContent>
         {children}

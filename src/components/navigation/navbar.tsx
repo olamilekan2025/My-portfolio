@@ -19,6 +19,22 @@ import { ThemeToggle } from "./theme-toggle";
 import { MobileNav } from "./mobile-nav";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 export function Navbar() {
   const active = useActiveSection([
@@ -37,6 +53,7 @@ export function Navbar() {
 
   const [scrolled, setScrolled] =
     React.useState(false);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
   React.useEffect(() => {
     const onScroll = () => {
@@ -76,7 +93,7 @@ export function Navbar() {
     >
       <Container>
      <div
-  className={`flex items-center justify-between px-5 md:px-0 ${
+  className={`flex items-center justify-between px-5 md:px-7 ${
     scrolled ? "h-16" : "h-20"
   }`}
 >
@@ -102,13 +119,29 @@ export function Navbar() {
   {/* Right */}
   <div className="flex items-end justify-end gap-4">
     {session?.user?.role === "admin" && (
-      <button
-        onClick={() => router.push("/admin/dashboard")}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition"
-        title="Go to Dashboard"
-      >
-        {session?.user?.name?.charAt(0)}
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition"
+              title="Admin Menu"
+            >
+              {session?.user?.name?.charAt(0)}
+            </button>
+          }
+        />
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => router.push("/admin/dashboard")}>
+            Dashboard
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => setShowLogoutModal(true)}
+            className="text-destructive focus:text-destructive"
+          >
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     )}
 
     <div className="hidden lg:block">
@@ -119,6 +152,27 @@ export function Navbar() {
   </div>
 </div>
       </Container>
+      
+      {/* Logout Confirmation Modal */}
+      <Dialog open={showLogoutModal} onOpenChange={setShowLogoutModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Logout</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to logout?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline">No</Button>} />
+            <Button
+              variant="destructive"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.header>
   );
 }

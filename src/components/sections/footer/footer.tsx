@@ -30,7 +30,7 @@ export function Footer() {
           }}
           className="py-12"
         >
-          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_auto] lg:items-start">
+          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_auto] lg:items-start px-5 md:px-7">
             <FooterBrand />
 
             <FooterNav />
@@ -38,7 +38,7 @@ export function Footer() {
             <FooterSocials />
           </div>
 
-          <div className="mt-10">
+          <div className="mt-10 px-5 md:px-7">
             <FooterBottom />
           </div>
         </motion.div>

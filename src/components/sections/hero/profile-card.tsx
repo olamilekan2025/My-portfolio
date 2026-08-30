@@ -21,7 +21,7 @@ export function ProfileCard() {
         <div className="relative flex flex-col items-center">
           <div className="relative h-80 w-72 bg-red-400 overflow-hidden rounded-3xl">
             <Image
-              src="/images/profile.png"
+              src="/images/WhatsApp_Image_2026-07-16_at_9.47.56_PM__1_-removebg-preview.png"
               alt="Olamilekan"
               fill
               priority

@@ -64,7 +64,7 @@ export function MobileNav({
 
       <SheetContent
         side="right"
-        className="flex w-full max-w-sm flex-col border-l bg-background/95 backdrop-blur-2xl "
+        className="flex w-full max-w-sm flex-col border-l bg-background/95 backdrop-blur-2xl px-6"
       >
         <SheetHeader className="mb-8">
           <SheetTitle className="sr-only">
@@ -78,7 +78,7 @@ export function MobileNav({
           variants={container}
           initial="hidden"
           animate="show"
-          className="flex flex-1 flex-col gap-5 pl-5"
+          className="flex flex-1 flex-col gap-5 pl-0"
         >
           {NAV_ITEMS.map((itemLink) => (
             <motion.div

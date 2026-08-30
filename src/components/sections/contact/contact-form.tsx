@@ -87,7 +87,7 @@ export function ContactForm() {
         rounded-3xl
         border
         bg-background/70
-        p-8
+        p-6 sm:p-8
         shadow-xl
         backdrop-blur-xl
         space-y-6
