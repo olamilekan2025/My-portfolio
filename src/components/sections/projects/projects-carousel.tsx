@@ -124,14 +124,14 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
   };
 
   return (
-    <div className="relative">
-      <div 
+    <div className="relative px-2 sm:px-0">
+      <div
         className="overflow-hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <motion.div
-          className="grid gap-4"
+          className="grid gap-4 sm:gap-6"
           style={{
             gridTemplateColumns: `repeat(${itemsPerView}, 1fr)`,
           }}
@@ -154,7 +154,7 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
               setTimeout(() => setIsPaused(false), AUTO_PLAY_INTERVAL);
             }}
             aria-label="Previous projects"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background shadow-md transition-all hover:scale-110 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/70 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-110 hover:border-blue-500/40 hover:bg-blue-500/10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:h-9 sm:w-9"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -166,7 +166,7 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
               setTimeout(() => setIsPaused(false), AUTO_PLAY_INTERVAL);
             }}
             aria-label="Next projects"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background shadow-md transition-all hover:scale-110 hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/70 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all hover:scale-110 hover:border-blue-500/40 hover:bg-blue-500/10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:h-9 sm:w-9"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -174,7 +174,7 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
       )}
 
       {showControls && totalSlides > 1 && (
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-8 flex justify-center gap-2">
           {Array.from({ length: totalSlides }).map((_, index) => (
             <button
               key={index}
@@ -184,10 +184,10 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                 setTimeout(() => setIsPaused(false), AUTO_PLAY_INTERVAL);
               }}
               aria-label={`Go to slide ${index + 1}`}
-              className={`h-1.5 rounded-full transition-all ${
+              className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? "w-6 bg-primary"
-                  : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                  ? "w-8 bg-blue-500"
+                  : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
             />
           ))}

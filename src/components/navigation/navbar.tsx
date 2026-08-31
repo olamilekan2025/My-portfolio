@@ -41,9 +41,9 @@ export function Navbar() {
     "home",
     "about",
     "skills",
-    "experience",
-    "services",
     "projects",
+    "services",
+    "experience",
     "testimonials",
     "contact",
   ]);
