@@ -39,6 +39,7 @@ export const skillCards: SkillCardData[] = [
       { name: "HTML", level: 100, icon: FaHtml5, color: "#E34F26" },
       { name: "CSS", level: 97, icon: FaCss3Alt, color: "#1572B6" },
       { name: "React", level: 95, icon: FaReact, color: "#61DAFB" },
+      { name: "Next.js", level: 98, icon: SiNextdotjs, color: "#000000", colorDark: "#FAFAFA" },
       { name: "JavaScript", level: 90, icon: FaJs, color: "#F7DF1E" },
       { name: "TypeScript", level: 90, icon: SiTypescript, color: "#3178C6" },
       { name: "Tailwind css", level: 90, icon: RiTailwindCssFill, color: "#3178C6" },
@@ -49,7 +50,7 @@ export const skillCards: SkillCardData[] = [
     id: "backend",
     title: "Backend & Database",
     skills: [
-      { name: "Next.js", level: 98, icon: SiNextdotjs, color: "#000000", colorDark: "#FAFAFA" },
+      { name: "Node.js", level: 98, icon: SiNextdotjs, color: "#000000", colorDark: "#FAFAFA" },
       { name: "MongoDB", level: 80, icon: SiMongodb, color: "#47A248" },
     ],
   },

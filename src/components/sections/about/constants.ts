@@ -9,7 +9,7 @@ import {
 export const EXPERIENCE = 2;
 
 export const ABOUT = {
-  name: "Olamilekan Abduljeleel",
+  name: " Oladunjoye Abduljeleel Olamilekan ",
 
   location: "Lagos, Nigeria",
 

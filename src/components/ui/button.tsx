@@ -4,7 +4,7 @@ import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { cn } from "@/lib/utils"
 
@@ -61,6 +61,15 @@ function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
   const [isHovered, setIsHovered] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setPrefersReducedMotion(
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }, []);
 
   // Define hover fill colors based on variant
   const getHoverFill = () => {
@@ -82,11 +91,6 @@ function Button({
     }
   };
 
-  // Check for reduced motion preference
-  const prefersReducedMotion = 
-    typeof window !== 'undefined' && 
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   return (
     <Comp
       className={cn(
@@ -94,6 +98,7 @@ function Button({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      suppressHydrationWarning
       {...props}
     >
       {asChild ? (
@@ -101,7 +106,7 @@ function Button({
       ) : (
         <>
           {/* Animated hover fill layer */}
-          {!prefersReducedMotion && (
+          {mounted && !prefersReducedMotion && (
             <motion.div
               className="absolute inset-0 z-0"
               initial={{ scaleX: 0 }}
