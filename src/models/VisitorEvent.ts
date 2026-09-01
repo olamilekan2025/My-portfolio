@@ -11,7 +11,7 @@ export interface IVisitorEvent extends Document {
   referrerDomain?: string;
 
   userAgent?: string;
-  device?: "desktop" | "mobile" | "tablet" | "unknown";
+  device: "desktop" | "mobile" | "tablet" | "unknown";
   browser?: string;
   os?: string;
 
@@ -41,6 +41,8 @@ const VisitorEventSchema = new Schema<IVisitorEvent>(
     path: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 500,
       index: true,
     },
 
@@ -77,22 +79,28 @@ const VisitorEventSchema = new Schema<IVisitorEvent>(
 
     browser: {
       type: String,
+      trim: true,
       maxlength: 100,
     },
 
     os: {
       type: String,
+      trim: true,
       maxlength: 100,
     },
 
     country: {
       type: String,
+      trim: true,
       maxlength: 100,
     },
 
     countryCode: {
       type: String,
+      trim: true,
+      uppercase: true,
       maxlength: 10,
+      index: true,
     },
 
     ipHash: {
@@ -105,12 +113,43 @@ const VisitorEventSchema = new Schema<IVisitorEvent>(
   }
 );
 
-VisitorEventSchema.index({ createdAt: -1 });
-VisitorEventSchema.index({ path: 1, createdAt: -1 });
-VisitorEventSchema.index({ visitorId: 1, createdAt: -1 });
+/*
+ * Analytics indexes
+ */
+VisitorEventSchema.index({
+  createdAt: -1,
+});
+
+VisitorEventSchema.index({
+  path: 1,
+  createdAt: -1,
+});
+
+VisitorEventSchema.index({
+  visitorId: 1,
+  createdAt: -1,
+});
+
+VisitorEventSchema.index({
+  sessionId: 1,
+  createdAt: -1,
+});
+
+VisitorEventSchema.index({
+  device: 1,
+  createdAt: -1,
+});
+
+VisitorEventSchema.index({
+  countryCode: 1,
+  createdAt: -1,
+});
 
 const VisitorEvent: Model<IVisitorEvent> =
   mongoose.models.VisitorEvent ||
-  mongoose.model<IVisitorEvent>("VisitorEvent", VisitorEventSchema);
+  mongoose.model<IVisitorEvent>(
+    "VisitorEvent",
+    VisitorEventSchema
+  );
 
 export default VisitorEvent;

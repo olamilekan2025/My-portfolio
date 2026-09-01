@@ -1,16 +1,22 @@
 import {
-  LayoutDashboard,
-  FolderKanban,
-  Briefcase,
-  Code2,
-  Mail,
-  Users,
   BarChart3,
+  FolderKanban,
+  ImageIcon,
+  LayoutDashboard,
+  Mail,
   Settings,
-  Bell,
 } from "lucide-react";
 
-export const adminNavigation = [
+import type { ElementType } from "react";
+
+export interface AdminNavigationItem {
+  title: string;
+  href: string;
+  icon: ElementType;
+  badge?: number;
+}
+
+export const adminNavigation: AdminNavigationItem[] = [
   {
     title: "Dashboard",
     href: "/admin/dashboard",
@@ -21,31 +27,16 @@ export const adminNavigation = [
     href: "/admin/projects",
     icon: FolderKanban,
   },
-  // {
-  //   title: "Experience",
-  //   href: "/admin/experience",
-  //   icon: Briefcase,
-  // },
-  // {
-  //   title: "Skills",
-  //   href: "/admin/skills",
-  //   icon: Code2,
-  // },
+  {
+    title: "Hero Manager",
+    href: "/admin/hero",
+    icon: ImageIcon,
+  },
   {
     title: "Messages",
     href: "/admin/messages",
     icon: Mail,
   },
-  {
-    title: "Notifications",
-    href: "/admin/notifications",
-    icon: Bell,
-  },
-  // {
-  //   title: "Newsletter",
-  //   href: "/admin/newsletter",
-  //   icon: Users,
-  // },
   {
     title: "Analytics",
     href: "/admin/analytics",

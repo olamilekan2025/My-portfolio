@@ -39,6 +39,11 @@ interface RecentMessage {
   createdAt: Date;
 }
 
+interface VisitorTrendEvent {
+  visitorId: string;
+  createdAt: Date;
+}
+
 interface VisitorAnalytics {
   totalVisitors: number;
   todayVisitors: number;
@@ -70,7 +75,9 @@ interface DashboardData {
 
 function startOfDay(date = new Date()) {
   const result = new Date(date);
+
   result.setHours(0, 0, 0, 0);
+
   return result;
 }
 
@@ -83,7 +90,7 @@ function startOfDaysAgo(days: number) {
 }
 
 /**
- * Returns seven daily buckets:
+ * Creates seven daily buckets:
  *
  * [6 days ago, 5 days ago, ... yesterday, today]
  */
@@ -102,13 +109,55 @@ function buildDailyTrend(
 
     const bucketEnd = new Date(bucketStart);
 
-    bucketEnd.setDate(bucketStart.getDate() + 1);
+    bucketEnd.setDate(
+      bucketStart.getDate() + 1
+    );
 
-    return dates.filter(
-      (date) =>
+    return dates.filter((date) => {
+      return (
         date >= bucketStart &&
         date < bucketEnd
-    ).length;
+      );
+    }).length;
+  });
+}
+
+/**
+ * Builds a unique visitor trend for the last 7 days.
+ */
+function buildUniqueVisitorTrend(
+  events: VisitorTrendEvent[],
+  days = 7
+): number[] {
+  const today = startOfDay();
+
+  return Array.from({ length: days }, (_, index) => {
+    const bucketStart = new Date(today);
+
+    bucketStart.setDate(
+      today.getDate() - (days - 1 - index)
+    );
+
+    const bucketEnd = new Date(bucketStart);
+
+    bucketEnd.setDate(
+      bucketStart.getDate() + 1
+    );
+
+    const visitors = new Set<string>();
+
+    for (const event of events) {
+      const createdAt = new Date(event.createdAt);
+
+      if (
+        createdAt >= bucketStart &&
+        createdAt < bucketEnd
+      ) {
+        visitors.add(event.visitorId);
+      }
+    }
+
+    return visitors.size;
   });
 }
 
@@ -119,70 +168,127 @@ function buildDailyTrend(
 async function getDashboardData(): Promise<DashboardData> {
   await connectDB();
 
+  const today = startOfDay();
+
+  const sevenDaysAgo = startOfDaysAgo(6);
+
+  const thirtyMinutesAgo = new Date(
+    Date.now() - 30 * 60 * 1000
+  );
+
   const [
-    projects,
-    messages,
-    totalVisitorResult,
-    todayVisitorResult,
+    projectsCount,
+    liveCount,
+    messagesCount,
+    unreadCount,
+
+    recentProjectsRaw,
+    recentMessagesRaw,
+
+    totalVisitors,
+    todayVisitors,
     todayPageViews,
-    activeSessionResult,
+    activeSessions,
+
     visitorTrendEvents,
     projectTrendEvents,
     messageTrendEvents,
   ] = await Promise.all([
+    /* -------------------------------------------------------
+       PROJECT COUNTS
+    ------------------------------------------------------- */
+
+    Project.countDocuments(),
+
+    Project.countDocuments({
+      status: "Live",
+    }),
+
+    /* -------------------------------------------------------
+       MESSAGE COUNTS
+    ------------------------------------------------------- */
+
+    Message.countDocuments(),
+
+    Message.countDocuments({
+      status: "pending",
+    }),
+
+    /* -------------------------------------------------------
+       RECENT PROJECTS
+    ------------------------------------------------------- */
+
     Project.find()
       .sort({ createdAt: -1 })
-      .limit(20)
+      .limit(5)
+      .select({
+        title: 1,
+        slug: 1,
+        image: 1,
+        category: 1,
+        status: 1,
+      })
       .lean(),
+
+    /* -------------------------------------------------------
+       RECENT MESSAGES
+    ------------------------------------------------------- */
 
     Message.find()
       .sort({ createdAt: -1 })
-      .limit(20)
+      .limit(5)
+      .select({
+        name: 1,
+        email: 1,
+        subject: 1,
+        status: 1,
+        createdAt: 1,
+      })
       .lean(),
 
-    /*
-     * Unique visitors across the entire portfolio.
-     */
+    /* -------------------------------------------------------
+       ALL-TIME UNIQUE VISITORS
+    ------------------------------------------------------- */
+
     VisitorEvent.distinct("visitorId"),
 
-    /*
-     * Unique visitors today.
-     */
+    /* -------------------------------------------------------
+       UNIQUE VISITORS TODAY
+    ------------------------------------------------------- */
+
     VisitorEvent.distinct("visitorId", {
       createdAt: {
-        $gte: startOfDay(),
+        $gte: today,
       },
     }),
 
-    /*
-     * Total page views today.
-     */
+    /* -------------------------------------------------------
+       PAGE VIEWS TODAY
+    ------------------------------------------------------- */
+
     VisitorEvent.countDocuments({
       createdAt: {
-        $gte: startOfDay(),
+        $gte: today,
       },
     }),
 
-    /*
-     * Sessions active during the last 30 minutes.
-     *
-     * This matches the SESSION_MAX_AGE in your
-     * visitor tracking route.
-     */
+    /* -------------------------------------------------------
+       ACTIVE SESSIONS
+    ------------------------------------------------------- */
+
     VisitorEvent.distinct("sessionId", {
       createdAt: {
-        $gte: new Date(
-          Date.now() - 30 * 60 * 1000
-        ),
+        $gte: thirtyMinutesAgo,
       },
     }),
 
-    /*
-     * Events from the last 7 days.
-     */
+    /* -------------------------------------------------------
+       VISITOR TREND EVENTS
+    ------------------------------------------------------- */
+
     VisitorEvent.find({
       createdAt: {
-        $gte: startOfDaysAgo(6),
+        $gte: sevenDaysAgo,
       },
     })
       .select({
@@ -191,12 +297,13 @@ async function getDashboardData(): Promise<DashboardData> {
       })
       .lean(),
 
-    /*
-     * Project events from the last 7 days.
-     */
+    /* -------------------------------------------------------
+       PROJECT TREND
+    ------------------------------------------------------- */
+
     Project.find({
       createdAt: {
-        $gte: startOfDaysAgo(6),
+        $gte: sevenDaysAgo,
       },
     })
       .select({
@@ -204,12 +311,13 @@ async function getDashboardData(): Promise<DashboardData> {
       })
       .lean(),
 
-    /*
-     * Message events from the last 7 days.
-     */
+    /* -------------------------------------------------------
+       MESSAGE TREND
+    ------------------------------------------------------- */
+
     Message.find({
       createdAt: {
-        $gte: startOfDaysAgo(6),
+        $gte: sevenDaysAgo,
       },
     })
       .select({
@@ -218,24 +326,12 @@ async function getDashboardData(): Promise<DashboardData> {
       .lean(),
   ]);
 
-  const projectsCount = projects.length;
-
-  const liveCount = projects.filter(
-    (project) => project.status === "Live"
-  ).length;
-
-  const messagesCount = messages.length;
-
-  const unreadCount = messages.filter(
-    (message) => message.status === "pending"
-  ).length;
-
-  /* ---------------------------------------------------------
-     Recent projects
-  --------------------------------------------------------- */
+  /* =========================================================
+     RECENT PROJECTS
+  ========================================================= */
 
   const recentProjects: RecentProject[] =
-    projects.slice(0, 5).map((project) => ({
+    recentProjectsRaw.map((project) => ({
       id: String(project._id),
       title: project.title,
       slug: project.slug,
@@ -244,12 +340,12 @@ async function getDashboardData(): Promise<DashboardData> {
       status: project.status,
     }));
 
-  /* ---------------------------------------------------------
-     Recent messages
-  --------------------------------------------------------- */
+  /* =========================================================
+     RECENT MESSAGES
+  ========================================================= */
 
   const recentMessages: RecentMessage[] =
-    messages.slice(0, 5).map((message) => ({
+    recentMessagesRaw.map((message) => ({
       id: String(message._id),
       name: message.name,
       email: message.email,
@@ -258,9 +354,9 @@ async function getDashboardData(): Promise<DashboardData> {
       createdAt: new Date(message.createdAt),
     }));
 
-  /* ---------------------------------------------------------
-     Project trend
-  --------------------------------------------------------- */
+  /* =========================================================
+     PROJECT TREND
+  ========================================================= */
 
   const projectTrend = buildDailyTrend(
     projectTrendEvents.map(
@@ -268,9 +364,9 @@ async function getDashboardData(): Promise<DashboardData> {
     )
   );
 
-  /* ---------------------------------------------------------
-     Message trend
-  --------------------------------------------------------- */
+  /* =========================================================
+     MESSAGE TREND
+  ========================================================= */
 
   const messageTrend = buildDailyTrend(
     messageTrendEvents.map(
@@ -278,62 +374,35 @@ async function getDashboardData(): Promise<DashboardData> {
     )
   );
 
-  /* ---------------------------------------------------------
-     Projects added this week
-  --------------------------------------------------------- */
+  /* =========================================================
+     PROJECTS ADDED THIS WEEK
+  ========================================================= */
 
   const addedThisWeek = projectTrend.reduce(
     (total, value) => total + value,
     0
   );
 
-  /* ---------------------------------------------------------
-     Visitor trend
-     
-     IMPORTANT:
-     We count UNIQUE visitors per day rather than
-     raw page-view events.
-  --------------------------------------------------------- */
+  /* =========================================================
+     VISITOR TREND
+  ========================================================= */
 
-  const visitorTrend = Array.from(
-    { length: 7 },
-    (_, index) => {
-      const today = startOfDay();
+  const visitorTrend =
+    buildUniqueVisitorTrend(
+      visitorTrendEvents.map((event) => ({
+        visitorId: event.visitorId,
+        createdAt: new Date(event.createdAt),
+      }))
+    );
 
-      const bucketStart = new Date(today);
-
-      bucketStart.setDate(
-        today.getDate() - (6 - index)
-      );
-
-      const bucketEnd = new Date(bucketStart);
-
-      bucketEnd.setDate(
-        bucketStart.getDate() + 1
-      );
-
-      const uniqueVisitors = new Set(
-        visitorTrendEvents
-          .filter((event) => {
-            const createdAt = new Date(
-              event.createdAt
-            );
-
-            return (
-              createdAt >= bucketStart &&
-              createdAt < bucketEnd
-            );
-          })
-          .map((event) => event.visitorId)
-      );
-
-      return uniqueVisitors.size;
-    }
-  );
+  /* =========================================================
+     RETURN
+  ========================================================= */
 
   return {
     projectsCount,
     liveCount,
+
     messagesCount,
     unreadCount,
 
@@ -346,10 +415,10 @@ async function getDashboardData(): Promise<DashboardData> {
     addedThisWeek,
 
     visitors: {
-      totalVisitors: totalVisitorResult.length,
-      todayVisitors: todayVisitorResult.length,
+      totalVisitors: totalVisitors.length,
+      todayVisitors: todayVisitors.length,
       todayPageViews,
-      activeSessions: activeSessionResult.length,
+      activeSessions: activeSessions.length,
       trend: visitorTrend,
     },
   };
@@ -405,7 +474,7 @@ export default async function AdminDashboardPage() {
       <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Projects"
-          value={String(projectsCount)}
+          value={formatNumber(projectsCount)}
           delta={
             projectsCount === 0
               ? "No projects yet"
@@ -424,7 +493,7 @@ export default async function AdminDashboardPage() {
 
         <StatCard
           title="Messages"
-          value={String(messagesCount)}
+          value={formatNumber(messagesCount)}
           delta={
             messagesCount === 0
               ? "No messages yet"
@@ -443,10 +512,14 @@ export default async function AdminDashboardPage() {
 
         <StatCard
           title="Visitors"
-          value={String(visitors.totalVisitors)}
+          value={formatNumber(
+            visitors.totalVisitors
+          )}
           delta={
             visitors.todayVisitors > 0
-              ? `${visitors.todayVisitors} today`
+              ? `${formatNumber(
+                  visitors.todayVisitors
+                )} today`
               : "No visitors today"
           }
           icon={
@@ -455,7 +528,9 @@ export default async function AdminDashboardPage() {
           gradient="from-emerald-400 to-teal-500"
           trend={visitors.trend}
           href="/admin/analytics"
-          flat={visitors.totalVisitors === 0}
+          flat={
+            visitors.totalVisitors === 0
+          }
         />
 
         <StatCard
@@ -548,6 +623,7 @@ export default async function AdminDashboardPage() {
                   className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:opacity-90"
                 >
                   Add Project
+
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
 
@@ -631,7 +707,9 @@ export default async function AdminDashboardPage() {
               hint={
                 visitors.totalVisitors === 0
                   ? "Visitor tracking is active and ready."
-                  : `${visitors.todayVisitors} unique visitor${
+                  : `${formatNumber(
+                      visitors.todayVisitors
+                    )} unique visitor${
                       visitors.todayVisitors === 1
                         ? ""
                         : "s"
@@ -757,10 +835,7 @@ function StatCard({
           </span>
         </span>
 
-        <Sparkline
-          data={trend}
-          gradient={gradient}
-        />
+        <Sparkline data={trend} />
       </div>
     </div>
   );
@@ -825,10 +900,8 @@ function AnalyticsMiniCard({
 
 function Sparkline({
   data,
-  gradient,
 }: {
   data: number[];
-  gradient: string;
 }) {
   const width = 72;
   const height = 28;
@@ -855,16 +928,16 @@ function Sparkline({
     return `${x},${y}`;
   });
 
-  const gradientId = `spark-${gradient
-    .replace(/[^a-z0-9]/gi, "")
-    .toLowerCase()}`;
+  const gradientId = `sparkline-gradient-${Math.random()
+    .toString(36)
+    .slice(2, 10)}`;
 
   return (
     <svg
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      className="shrink-0 overflow-visible"
+      className="shrink-0 overflow-visible text-primary"
       aria-hidden="true"
     >
       <defs>
@@ -896,7 +969,6 @@ function Sparkline({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-primary"
       />
 
       <polygon
@@ -904,7 +976,6 @@ function Sparkline({
           " "
         )} ${width},${height}`}
         fill={`url(#${gradientId})`}
-        className="text-primary"
       />
     </svg>
   );
