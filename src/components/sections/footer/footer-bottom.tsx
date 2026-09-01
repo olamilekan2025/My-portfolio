@@ -3,13 +3,18 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function FooterBottom() {
-  const year = new Date().getFullYear();
+  const [year, setYear] = useState(2026);
+  
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={false}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{

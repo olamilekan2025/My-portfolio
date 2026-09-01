@@ -29,7 +29,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
       className="group relative h-full"
-      initial={{ opacity: 0, y: 20 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >

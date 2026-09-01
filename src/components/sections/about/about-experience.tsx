@@ -117,7 +117,7 @@ export function AboutExperience() {
     <section className="mt-24 sm:mt-32">
       {/* SECTION HEADER */}
       <motion.div
-        initial={{ opacity: 0, y: 25 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -155,7 +155,7 @@ export function AboutExperience() {
           {experiences.map((experience, index) => (
             <motion.article
               key={`${experience.company}-${experience.role}`}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{
@@ -270,7 +270,7 @@ export function AboutExperience() {
 
       {/* BOTTOM SUMMARY */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.3, duration: 0.6 }}

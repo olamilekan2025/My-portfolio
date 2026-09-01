@@ -75,10 +75,8 @@ export function Navbar() {
   }, []);
 
   return (
-    <motion.header 
-      initial={{
-        y: -80,
-      }}
+    <motion.header
+      initial={false}
       animate={{
         y: 0,
       }}

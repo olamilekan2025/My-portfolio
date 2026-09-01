@@ -4,8 +4,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Toaster } from "sonner";
-import Providers from "../components/providers/providers";
+
+import Providers from "@/components/providers/providers";
 import GoogleAnalytics from "@/components/analytics/google-analytics";
+import VisitorTracker from "@/components/analytics/visitor-tracker";
 import { VerificationProvider } from "@/components/admin";
 import { LayoutContent } from "@/components/layout/layout-content";
 
@@ -20,7 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://oladunjoye-abduljeleel-k1bj.vercel.app"), // Replace after deployment
+  metadataBase: new URL(
+    "https://oladunjoye-abduljeleel-k1bj.vercel.app"
+  ),
 
   title: {
     default: "Olamilekan | Full Stack Developer",
@@ -41,7 +45,11 @@ export const metadata: Metadata = {
     "Web Developer",
   ],
 
-  authors: [{ name: "Olamilekan" }],
+  authors: [
+    {
+      name: "Olamilekan",
+    },
+  ],
 
   creator: "Olamilekan",
 
@@ -51,6 +59,8 @@ export const metadata: Metadata = {
       "Premium Full Stack Developer Portfolio built with Next.js.",
     type: "website",
     locale: "en_US",
+    url: "https://oladunjoye-abduljeleel-k1bj.vercel.app",
+    siteName: "Olamilekan | Full Stack Developer",
   },
 
   twitter: {
@@ -58,6 +68,11 @@ export const metadata: Metadata = {
     title: "Olamilekan | Full Stack Developer",
     description:
       "Premium Full Stack Developer Portfolio built with Next.js.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -72,21 +87,27 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-     <body>
-     <GoogleAnalytics />
-  <Providers>
-    <VerificationProvider>
-      <LayoutContent>
-        {children}
-      </LayoutContent>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        {/* Global analytics */}
+        <GoogleAnalytics />
 
-      <Toaster
-        richColors
-        position="top-right"
-      />
-    </VerificationProvider>
-  </Providers>
-</body>
+        {/* Global visitor tracking */}
+        <VisitorTracker />
+
+        {/* Application providers */}
+        <Providers>
+          <VerificationProvider>
+            <LayoutContent>{children}</LayoutContent>
+
+            {/* Global notifications */}
+            <Toaster
+              richColors
+              position="top-right"
+              closeButton
+            />
+          </VerificationProvider>
+        </Providers>
+      </body>
     </html>
   );
 }

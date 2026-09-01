@@ -135,7 +135,7 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
           style={{
             gridTemplateColumns: `repeat(${itemsPerView}, 1fr)`,
           }}
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           key={currentIndex}
         >

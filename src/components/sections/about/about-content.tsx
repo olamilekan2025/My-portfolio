@@ -13,10 +13,7 @@ import {
 export function AboutContent() {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        x: 50,
-      }}
+      initial={false}
       whileInView={{
         opacity: 1,
         x: 0,
@@ -31,7 +28,7 @@ export function AboutContent() {
     >
       {/* Badge */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.2 }}

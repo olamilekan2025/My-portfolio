@@ -81,7 +81,7 @@ BACKGROUND
         SECTION HEADER
     ========================================================= */}
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 30 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{
@@ -132,7 +132,7 @@ BACKGROUND
         CATEGORY NAVIGATION
     ========================================================= */}
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{
@@ -218,14 +218,7 @@ BACKGROUND
           <motion.div
             key={card.id}
             layout
-            initial={
-              reduceMotion
-                ? false
-                : {
-                    opacity: 0,
-                    y: 24,
-                  }
-            }
+            initial={false}
             animate={{
               opacity: 1,
               y: 0,
@@ -328,7 +321,7 @@ BACKGROUND
         BOTTOM CTA / STACK STATEMENT
     ========================================================= */}
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{

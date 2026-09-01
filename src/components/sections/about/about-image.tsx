@@ -7,10 +7,7 @@ import { MapPin, Code2, Zap } from "lucide-react";
 export function AboutImage() {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        x: -50,
-      }}
+      initial={false}
       whileInView={{
         opacity: 1,
         x: 0,
@@ -45,6 +42,7 @@ export function AboutImage() {
               alt="Olamilekan Abduljeleel"
               fill
               priority
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover"
             />
             
@@ -55,7 +53,7 @@ export function AboutImage() {
 
         {/* Floating info cards */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.5 }}
@@ -73,7 +71,7 @@ export function AboutImage() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.5 }}

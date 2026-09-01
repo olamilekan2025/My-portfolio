@@ -10,10 +10,7 @@ import { ContactSocials } from "./contact-socials";
 export function ContactInfo() {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        x: -40,
-      }}
+      initial={false}
       whileInView={{
         opacity: 1,
         x: 0,

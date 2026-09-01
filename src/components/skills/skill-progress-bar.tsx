@@ -68,7 +68,7 @@ export function SkillProgressBar({ skill, delay = 0, isExpanded = true }: SkillP
         </span>
         
         <motion.span
-          initial={{ opacity: 0, x: -10 }}
+          initial={false}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ delay: delay + 0.2 }}
@@ -102,13 +102,13 @@ export function SkillProgressBar({ skill, delay = 0, isExpanded = true }: SkillP
         {/* Progress bar with crazy animation */}
         <motion.div
           className="relative h-full rounded-full bg-[var(--skill-color)] dark:bg-[var(--skill-color-dark)]"
-          initial={{ width: 0 }}
+          initial={false}
           whileInView={{ width: `${skill.level}%` }}
           viewport={{ once: true, margin: "-10%" }}
-          transition={{ 
-            duration: 1.5, 
+          transition={{
+            duration: 1.5,
             delay,
-            ease: [0.22, 1, 0.36, 1] 
+            ease: [0.22, 1, 0.36, 1]
           }}
         >
           {/* Shimmer effect */}
@@ -130,7 +130,7 @@ export function SkillProgressBar({ skill, delay = 0, isExpanded = true }: SkillP
       {/* Skill level indicator with particles */}
       {isExpanded && (
         <motion.div
-          initial={{ opacity: 0, y: 5 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: delay + 0.3 }}
@@ -139,7 +139,7 @@ export function SkillProgressBar({ skill, delay = 0, isExpanded = true }: SkillP
           {[...Array(Math.ceil(skill.level / 20))].map((_, i) => (
             <motion.div
               key={i}
-              initial={{ scale: 0 }}
+              initial={false}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: delay + 0.4 + i * 0.05 }}

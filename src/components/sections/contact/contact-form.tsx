@@ -69,10 +69,7 @@ export function ContactForm() {
   return (
     <motion.form
       onSubmit={handleSubmit(onSubmit)}
-      initial={{
-        opacity: 0,
-        x: 40,
-      }}
+      initial={false}
       whileInView={{
         opacity: 1,
         x: 0,

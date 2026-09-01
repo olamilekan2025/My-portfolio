@@ -7,7 +7,7 @@ import { GradientText } from "@/components/common/gradient-text";
 export function FooterBrand() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={false}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{

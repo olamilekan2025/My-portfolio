@@ -25,10 +25,7 @@ export function AboutSection() {
       <Container>
         {/* Main About Section */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 40,
-          }}
+          initial={false}
           whileInView={{
             opacity: 1,
             y: 0,

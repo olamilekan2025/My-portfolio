@@ -211,14 +211,7 @@ export function HeroSection() {
               {/* INTRO LABEL */}
 
               <motion.div
-                initial={
-                  reduceMotion
-                    ? false
-                    : {
-                        opacity: 0,
-                        y: 15,
-                      }
-                }
+                initial={false}
                 animate={{
                   opacity: 1,
                   y: 0,
@@ -239,14 +232,7 @@ export function HeroSection() {
               {/* MAIN HEADING */}
 
               <motion.h1
-                initial={
-                  reduceMotion
-                    ? false
-                    : {
-                        opacity: 0,
-                        y: 30,
-                      }
-                }
+                initial={false}
                 animate={{
                   opacity: 1,
                   y: 0,
@@ -294,14 +280,7 @@ export function HeroSection() {
               {/* DESCRIPTION */}
 
               <motion.p
-                initial={
-                  reduceMotion
-                    ? false
-                    : {
-                        opacity: 0,
-                        y: 20,
-                      }
-                }
+                initial={false}
                 animate={{
                   opacity: 1,
                   y: 0,
@@ -321,14 +300,7 @@ className="mx-auto mt-6 max-w-[650px] text-center text-sm leading-7 text-muted-f
               {/* ACTIONS */}
 
               <motion.div
-  initial={
-    reduceMotion
-      ? false
-      : {
-          opacity: 0,
-          y: 20,
-        }
-  }
+  initial={false}
   animate={{
     opacity: 1,
     y: 0,
@@ -367,13 +339,7 @@ className="mx-auto mt-6 max-w-[650px] text-center text-sm leading-7 text-muted-f
               {/* SOCIALS */}
 
              <motion.div
-  initial={
-    reduceMotion
-      ? false
-      : {
-          opacity: 0,
-        }
-  }
+  initial={false}
   animate={{
     opacity: 1,
   }}
