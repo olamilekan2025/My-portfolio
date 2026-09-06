@@ -65,21 +65,21 @@ export function AboutContent() {
       {/* Key Highlights */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-          <div className="text-2xl font-bold text-foreground">3+</div>
+          <div className="text-2xl font-bold text-foreground">2+</div>
           <div className="text-sm text-muted-foreground">Years of Experience</div>
         </div>
         <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-          <div className="text-2xl font-bold text-foreground">40+</div>
+          <div className="text-2xl font-bold text-foreground">6+</div>
           <div className="text-sm text-muted-foreground">Projects Delivered</div>
         </div>
-        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
+        {/* <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
           <div className="text-2xl font-bold text-foreground">25+</div>
           <div className="text-sm text-muted-foreground">Happy Clients</div>
-        </div>
-        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
+        </div> */}
+        {/* <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
           <div className="text-2xl font-bold text-foreground">15+</div>
           <div className="text-sm text-muted-foreground">Technologies</div>
-        </div>
+        </div> */}
       </div>
 
 {/* CTA Buttons */}

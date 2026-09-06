@@ -50,7 +50,7 @@ export const skillCards: SkillCardData[] = [
     id: "backend",
     title: "Backend & Database",
     skills: [
-      { name: "Node.js", level: 98, icon: SiNextdotjs, color: "#000000", colorDark: "#FAFAFA" },
+      { name: "Node.js", level: 75, icon: SiNextdotjs, color: "#000000", colorDark: "#FAFAFA" },
       { name: "MongoDB", level: 80, icon: SiMongodb, color: "#47A248" },
     ],
   },

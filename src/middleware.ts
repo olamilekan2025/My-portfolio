@@ -47,8 +47,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-const ADMIN_GATE_PATH = "/admin";
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -58,12 +56,6 @@ export function middleware(request: NextRequest) {
   if (!pathname.startsWith("/admin")) {
     return NextResponse.next();
   }
-
-  /*
-   * The admin gate cookie is the first layer.
-   */
-  const hasAdminGate =
-    request.cookies.get("admin-gate")?.value === "true";
 
   /*
    * Supported NextAuth/Auth.js session cookie names.
@@ -86,51 +78,10 @@ export function middleware(request: NextRequest) {
 
   /*
    * ---------------------------------------------------------
-   * ADMIN GATE
-   * ---------------------------------------------------------
-   *
-   * /admin is the gate page.
-   *
-   * If the user hasn't passed the PIN gate, keep them
-   * on the public/admin gate page.
-   */
-
-  if (!hasAdminGate && pathname !== ADMIN_GATE_PATH) {
-    return NextResponse.redirect(
-      new URL("/admin", request.url)
-    );
-  }
-
-  /*
-   * ---------------------------------------------------------
-   * ALREADY AUTHENTICATED
-   * ---------------------------------------------------------
-   *
-   * If the user has both:
-   * - passed the admin gate
-   * - authenticated successfully
-   *
-   * send them directly to the dashboard when they visit
-   * /admin.
-   */
-
-  if (
-    pathname === ADMIN_GATE_PATH &&
-    hasAdminGate &&
-    hasSession
-  ) {
-    return NextResponse.redirect(
-      new URL("/admin/dashboard", request.url)
-    );
-  }
-
-  /*
-   * ---------------------------------------------------------
    * AUTHENTICATION
    * ---------------------------------------------------------
    *
-   * Once the gate has been passed, all other admin pages
-   * require a session.
+   * All admin pages require a session.
    */
 
   if (!hasSession) {
