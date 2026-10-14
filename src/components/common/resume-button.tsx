@@ -8,7 +8,7 @@ interface ResumeButtonProps {
 }
 
 export function ResumeButton({
-  url = "/resume.pdf",
+  url = "/resumes.pdf",
 }: ResumeButtonProps) {
   return (
     <a
