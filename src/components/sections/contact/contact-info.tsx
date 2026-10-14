@@ -91,16 +91,16 @@ export function ContactInfo() {
         {/* Decorative background */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-green-500/10 blur-3xl" />
 
-        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center">
+        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center justify-center">
           {/* QR Code */}
           <div className="shrink-0">
-            <div className="relative overflow-hidden rounded-2xl border border-border bg-white p-3 shadow-lg">
+            <div className="relative overflow-hidden rounded-2xl border border-border p-3 shadow-lg">
               <Image
                 src="/qr.png"
                 alt="Scan QR code to contact me on WhatsApp"
                 width={180}
                 height={180}
-                className="h-40 w-40 object-contain sm:h-44 sm:w-44"
+                className="h-40 w-40 object-contain sm:h-44 sm:w-54"
                 priority
               />
             </div>

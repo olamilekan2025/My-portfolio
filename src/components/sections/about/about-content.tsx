@@ -1,188 +1,165 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Download, Mail } from "lucide-react";
+import {
+  ArrowUpRight,
+  Download,
+  Mail,
+  Sparkles,
+} from "lucide-react";
 
 import { GradientText } from "@/components/common/gradient-text";
+import { ABOUT } from "../about/constants";
 
-import {
-  ABOUT,
-  BIOGRAPHY,
-} from "../about/constants";
+const highlights = [
+  {
+    value: "2+",
+    label: "Years of web development",
+  },
+  {
+    value: "3+",
+    label: "Projects showcased",
+  },
+];
 
 export function AboutContent() {
   return (
-    <motion.div
-      initial={false}
-      whileInView={{
-        opacity: 1,
-        x: 0,
-      }}
-      viewport={{
-        once: true,
-      }}
-      transition={{
-        duration: 0.8,
-      }}
-      className="space-y-8 px-2 md:px-0"
-    >
-      {/* Badge */}
+    <div className="relative space-y-7 sm:space-y-8">
+      {/* Introduction */}
+      <div className="space-y-5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-3.5 py-2"
+        >
+          <Sparkles className="h-4 w-4 text-primary" />
+
+          <span className="text-xs font-semibold text-primary sm:text-sm">
+            About Me
+          </span>
+        </motion.div>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+        >
+          Hi, I&apos;m{" "}
+          <GradientText>{ABOUT.name}</GradientText>
+          <span className="mt-3 block text-foreground">
+            Frontend Developer
+            <span className="text-muted-foreground"> &amp; </span>
+            <GradientText>Full-Stack Learner.</GradientText>
+          </span>
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
+        >
+          I&apos;m a web developer based in {ABOUT.location}, passionate
+          about building modern, responsive web applications that combine
+          thoughtful design with practical functionality.
+        </motion.p>
+      </div>
+
+      {/* Personal story */}
       <motion.div
-        initial={false}
+        initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
-        className="inline-flex rounded-full border border-primary/20 bg-primary/5 px-4 py-2"
+        transition={{ duration: 0.55, delay: 0.1 }}
+        className="max-w-3xl space-y-4 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8"
       >
-        <span className="text-sm font-medium text-primary">
-          About Me
-        </span>
+        <p>
+          I started my web development journey in 2024, focusing on
+          frontend development and learning how to turn designs and ideas
+          into engaging user experiences. Since then, I&apos;ve continued
+          to strengthen my skills by building projects and exploring
+          modern web technologies.
+        </p>
+
+        <p>
+          I work with React, Next.js, TypeScript, and Tailwind CSS to
+          create responsive interfaces. I&apos;m also developing my
+          backend skills with Node.js, Express, REST APIs, and MongoDB,
+          allowing me to build applications that go beyond the user
+          interface.
+        </p>
+
+        <p>
+          My projects include Alifat Connect, a digital utility platform,
+          and the ITMT Management System, a school management application.
+          These projects have given me practical experience connecting
+          frontend interfaces with backend services, authentication,
+          databases, and payment workflows.
+        </p>
       </motion.div>
 
-      {/* Heading */}
-      <div className="space-y-4">
-        <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
-          Hi, I'm{" "}
-          <GradientText>
-            {ABOUT.name}
-          </GradientText>
-        </h2>
-        <p className="text-xl text-muted-foreground">
-          Full Stack Developer & Digital Experience Creator
-        </p>
-      </div>
+      {/* Highlights */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.55, delay: 0.15 }}
+        className="grid max-w-2xl grid-cols-2 gap-3 sm:gap-4"
+      >
+        {highlights.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-2xl border border-border/60 bg-background/50 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.04] sm:p-5"
+          >
+            <p className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              <GradientText>{item.value}</GradientText>
+            </p>
 
-      {/* Bio */}
-      <div className="space-y-4 text-muted-foreground leading-relaxed">
-        <p>
-          I'm a passionate full-stack developer based in {ABOUT.location} with a deep love for crafting exceptional digital experiences. With expertise spanning modern web technologies, I transform complex ideas into elegant, scalable solutions.
-        </p>
-        <p>
-          My journey in tech has been driven by curiosity and a commitment to continuous learning. I specialize in building performant applications using Next.js, React, TypeScript, and Node.js, with a keen eye for user experience and clean architecture.
-        </p>
-      </div>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground sm:text-sm">
+              {item.label}
+            </p>
+          </div>
+        ))}
+      </motion.div>
 
-      {/* Key Highlights */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-          <div className="text-2xl font-bold text-foreground">2+</div>
-          <div className="text-sm text-muted-foreground">Years of Experience</div>
-        </div>
-        <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-          <div className="text-2xl font-bold text-foreground">6+</div>
-          <div className="text-sm text-muted-foreground">Projects Delivered</div>
-        </div>
-        {/* <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-          <div className="text-2xl font-bold text-foreground">25+</div>
-          <div className="text-sm text-muted-foreground">Happy Clients</div>
-        </div> */}
-        {/* <div className="rounded-xl border border-border/50 bg-muted/30 p-4">
-          <div className="text-2xl font-bold text-foreground">15+</div>
-          <div className="text-sm text-muted-foreground">Technologies</div>
-        </div> */}
-      </div>
+      {/* Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="flex flex-col gap-3 pt-1 sm:flex-row sm:flex-wrap"
+      >
+        <motion.a
+          href="#contact"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/15 transition-all duration-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <Mail className="h-4 w-4" />
 
-{/* CTA Buttons */}
-<div className="flex flex-wrap gap-4 pt-4">
-  {/* Get In Touch */}
-  <motion.a
-    href="#contact"
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-    className="
-      group
-      relative
-      isolate
-      inline-flex
-      items-center
-      gap-2
-      overflow-hidden
-      rounded-lg
-      bg-primary
-      px-6
-      py-3
-      font-semibold
-      text-primary-foreground
-      shadow-lg
-      transition-shadow
-      duration-300
-      hover:shadow-xl
-    "
-  >
-    {/* Animated gradient background */}
-    <span
-      className="
-        absolute
-        inset-0
-        z-0
-        origin-left
-        scale-x-0
-        bg-[linear-gradient(90deg,#3b82f6_0%,#8b5cf6_50%,#22d3ee_100%)]
-        transition-transform
-        duration-500
-        ease-out
-        group-hover:scale-x-100
-      "
-    />
+          <span>Get In Touch</span>
 
-    {/* Button content */}
-    <Mail className="relative z-10 h-4 w-4" />
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </motion.a>
 
-    <span className="relative z-10">
-      Get In Touch
-    </span>
-  </motion.a>
+        <motion.a
+          href="/resume.pdf"
+          download
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-background/70 px-6 py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/40 hover:bg-primary/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
 
-  {/* Download CV */}
-  <motion.a
-    href="/resume.pdf"
-  download
-  whileHover={{ scale: 1.02 }}
-  whileTap={{ scale: 0.98 }}
-    className="
-      group
-      relative
-      isolate
-      inline-flex
-      items-center
-      gap-2
-      overflow-hidden
-      rounded-lg
-      border
-      border-border/50
-      bg-background
-      px-6
-      py-3
-      font-semibold
-      text-foreground
-      transition-all
-      duration-300
-    "
-  >
-    {/* Animated gradient background */}
-    <span
-      className="
-        absolute
-        inset-0
-        z-0
-        origin-left
-        scale-x-0
-        bg-[linear-gradient(90deg,#3b82f6_0%,#8b5cf6_50%,#22d3ee_100%)]
-        transition-transform
-        duration-500
-        ease-out
-        group-hover:scale-x-100
-      "
-    />
-
-    {/* Button content */}
-    <Download className="relative z-10 h-4 w-4 transition-colors duration-300 group-hover:text-white" />
-
-    <span className="relative z-10 transition-colors duration-300 group-hover:text-white">
-      Download CV
-    </span>
-  </motion.a>
-</div>
-    </motion.div>
+          <span>Download CV</span>
+        </motion.a>
+      </motion.div>
+    </div>
   );
 }

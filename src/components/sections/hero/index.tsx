@@ -650,19 +650,19 @@ const SOCIALS = [
   {
     name: "LinkedIn",
     icon: FaLinkedinIn,
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/abduljelil-oladunjoye-olamilekan-1199a0438",
   },
 
   {
     name: "X",
     icon: FaXTwitter,
-    href: "https://x.com",
+    href: "https://x.com/Olafrofh",
   },
 
   {
     name: "Email",
     icon: IoMailOpenOutline,
-    href: "mailto:abduljeleeloladunjoye@gmail.com",
+    href: "mailto:abduljeliloladunjoye0@gmail.com",
   },
 ];
 

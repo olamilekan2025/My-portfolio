@@ -146,17 +146,17 @@ import { FiLinkedin } from "react-icons/fi";
 const socials = [
   {
     name: "GitHub",
-    href: "https://github.com/yourusername",
+    href: "https://github.com/olamilekan2025",
     icon: FaGithub,
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com/in/yourusername",
+    href: "https://www.linkedin.com/in/abduljelil-oladunjoye-olamilekan-1199a0438",
     icon: FiLinkedin,
   },
   {
     name: "X",
-    href: "https://x.com/yourusername",
+    href: "https://x.com/Olafrofh",
     icon: FaXTwitter,
   },
 ];
@@ -164,8 +164,8 @@ const socials = [
 const contacts = [
   {
     label: "Email",
-    value: "abduljeleeloladunjoye@gmail.com",
-    href: "abduljeleeloladunjoye@gmail.com",
+    value: "abduljeliloladunjoye0@gmail.com",
+    href: "abduljeliloladunjoye0@gmail.com",
     icon: Mail,
   },
   {

@@ -1,130 +1,136 @@
+
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { SkillProgressBar } from "../../components/skills/skill-progress-bar";
+import {
+  ChevronDown,
+  Layers3,
+  Sparkles,
+} from "lucide-react";
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import { SkillProgressBar } from "@/components/skills/skill-progress-bar";
 import type { SkillCardData } from "@/types/skill";
 import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface SkillCardProps {
   data: SkillCardData;
-  /** Stagger delay in seconds for the card's own entrance animation */
   delay?: number;
   className?: string;
 }
 
-/**
- * Premium interactive skill card with expand/collapse functionality,
- * 3D hover effects, and enhanced animations.
- */
-export function SkillCard({ data, delay = 0, className }: SkillCardProps) {
+export function SkillCard({
+  data,
+  className,
+}: SkillCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+
+  const visibleSkills = isExpanded
+    ? data.skills
+    : data.skills.slice(0, 3);
+
+  const remainingSkills = Math.max(data.skills.length - 3, 0);
+  const contentId = `skills-${data.id}`;
 
   return (
-    <motion.div
-      initial={false}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{
-        y: -12,
-        scale: 1.02,
-        rotateX: 5,
-        rotateY: 5,
-      }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="h-full"
-      style={{
-        perspective: 1000,
-        transformStyle: "preserve-3d",
-      }}
+    <Card
+      className={cn(
+        "group relative flex h-full min-w-0 flex-col overflow-hidden",
+        "rounded-2xl border border-border/80 bg-card shadow-sm",
+        "hover:border-blue-500/30",
+        className,
+      )}
     >
-      <Card
-        className={cn(
-          "h-full border-border/50 bg-gradient-to-br from-background via-background to-muted/30 backdrop-blur-xl",
-          "transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30",
-          "relative overflow-hidden",
-          className
-        )}
-      >
-        {/* Animated gradient border effect */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-primary/20 via-violet-500/20 to-cyan-500/20 opacity-0"
-          animate={{
-            opacity: isHovered ? 0.1 : 0,
-          }}
-          transition={{ duration: 0.3 }}
-        />
+      {/* Brand accent */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-400"
+      />
 
-        <CardHeader className="relative z-10">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-bold">
+      <CardHeader className="px-4 pb-4 pt-5 sm:px-5 sm:pt-6">
+        <div className="flex items-start gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.12] to-violet-500/[0.07] text-blue-600 dark:text-blue-400">
+            <Layers3 className="h-[19px] w-[19px]" />
+          </div>
+
+          <div className="min-w-0 flex-1 pt-0.5">
+            <CardTitle className="break-words text-base font-semibold leading-6 tracking-tight text-foreground sm:text-lg">
               {data.title}
             </CardTitle>
-            <motion.button
-              onClick={() => setIsExpanded(!isExpanded)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="rounded-full p-1 hover:bg-muted/50 transition-colors"
-            >
-              {isExpanded ? (
-                <ChevronUp className="h-5 w-5 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-muted-foreground" />
-              )}
-            </motion.button>
+
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              {String(data.skills.length).padStart(2, "0")}{" "}
+              {data.skills.length === 1
+                ? "technology"
+                : "technologies"}
+            </p>
           </div>
-        </CardHeader>
 
-        <CardContent className="relative z-10">
-          <motion.div
-            initial={false}
-            animate={{
-              height: isExpanded ? "auto" : "200px",
-            }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
+          <div
+            aria-hidden="true"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-violet-500/15 bg-violet-500/[0.05] text-violet-500"
           >
-            <div className="flex flex-col gap-4 pb-2">
-              {data.skills.map((skill, i) => (
-                <SkillProgressBar 
-                  key={skill.name} 
-                  skill={skill} 
-                  delay={delay + i * 0.08} 
-                  isExpanded={isExpanded}
-                />
-              ))}
+            <Sparkles className="h-4 w-4" />
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="flex flex-1 flex-col px-4 pb-4 pt-0 sm:px-5 sm:pb-5">
+        <div className="mb-5 h-px bg-border/70" />
+
+        <div
+          id={contentId}
+          className="flex flex-1 flex-col gap-5"
+        >
+          {visibleSkills.map((skill) => (
+            <div key={skill.name} className="min-w-0">
+              <SkillProgressBar
+                skill={skill}
+                delay={0}
+                isExpanded={isExpanded}
+              />
             </div>
-          </motion.div>
+          ))}
+        </div>
 
-          {/* Expand hint */}
-          {!isExpanded && data.skills.length > 3 && (
-            <motion.div
-              className="mt-4 text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <p className="text-xs text-muted-foreground">
-                Click to see all {data.skills.length} skills
-              </p>
-            </motion.div>
-          )}
-        </CardContent>
+        {remainingSkills > 0 && (
+          <button
+            type="button"
+            aria-expanded={isExpanded}
+            aria-controls={contentId}
+            onClick={() => setIsExpanded((previous) => !previous)}
+            className={cn(
+              "mt-6 flex min-h-11 w-full items-center justify-between gap-3",
+              "rounded-xl border border-border/80 bg-background/40 px-3.5 py-3",
+              "text-left text-xs font-semibold text-muted-foreground",
+              "hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:text-foreground",
+              "focus-visible:outline-none focus-visible:ring-2",
+              "focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+              "focus-visible:ring-offset-background",
+            )}
+          >
+            <span>
+              {isExpanded
+                ? "Show fewer skills"
+                : `Explore ${remainingSkills} more ${
+                    remainingSkills === 1 ? "skill" : "skills"
+                  }`}
+            </span>
 
-        {/* Glow effect on hover */}
-        <motion.div
-          className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-violet-500/20 to-cyan-500/20 blur-xl opacity-0"
-          animate={{
-            opacity: isHovered ? 0.3 : 0,
-          }}
-          transition={{ duration: 0.3 }}
-        />
-      </Card>
-    </motion.div>
+            <ChevronDown
+              className={cn(
+                "h-4 w-4 shrink-0",
+                isExpanded && "rotate-180",
+              )}
+            />
+          </button>
+        )}
+      </CardContent>
+    </Card>
   );
 }
